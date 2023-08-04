@@ -49,7 +49,10 @@ df
 
 
 counties
-
+#To choose for a specific date
+df["date"] = pd.to_datetime(df["date"])
+df_date_1 = df.loc[df["date"] == "2018-1-7"]
+df_date_1
 
 # In[6]:
 
