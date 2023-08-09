@@ -49,16 +49,42 @@ df
 
 
 counties
-#To choose for a specific date
+
+
+# In[9]:
+
+
 df["date"] = pd.to_datetime(df["date"])
+
+
+# In[10]:
+
+
+df.info()
+
+
+# In[11]:
+
+
+df['year'] = df['date'].dt.year
+df['month'] = df['date'].dt.month
+df['day'] = df['date'].dt.day
+df
+
+
+# In[19]:
+
+
 df_date_1 = df.loc[df["date"] == "2018-1-7"]
 df_date_1
+df_date_2 = df.loc[df["date"] == "2020-12-13"]
 
-# In[6]:
+
+# In[17]:
 
 
 #initializing choropleth. location, color, scope, colorscale
-fig = px.choropleth(df,                 # name of your dataframe
+fig = px.choropleth(df_date_1,                 # name of your dataframe
                     geojson=counties,
                     locations='county', # name of column in df that has the county fips
                     color='indoor_activity',      # name of column in df that has the data you want to plot
@@ -67,7 +93,7 @@ fig = px.choropleth(df,                 # name of your dataframe
                    )
 
 
-# In[7]:
+# In[18]:
 
 
 ##############################################
@@ -97,8 +123,39 @@ fig.update_traces(marker_line_width=0.3,  # controls county border line width
                   )
 
 
-# In[ ]:
+# In[20]:
 
 
+#initializing choropleth. location, color, scope, colorscale
+fig = px.choropleth(df_date_2,                 # name of your dataframe
+                    geojson=counties,
+                    locations='county', # name of column in df that has the county fips
+                    color='indoor_activity',      # name of column in df that has the data you want to plot
+                    color_continuous_scale= px.colors.diverging.Picnic, # can choose colorscale from https://plotly.com/python/builtin-colorscales/
+                    scope='usa'
+                   )
+##############################################
+# All the code below will let you control the characterisitcs of the map
+# I would ignore it for now and add it in later as needd
+fig.update_layout(margin=dict(b=0, t=0, l=0, r=0),  # sets the margins of the plot w/in its div
+                  # controls appearance of hover label
+                  hoverlabel=dict(bgcolor='white', font_size=16),
+                  # controls appearance of color bar & title
+                  coloraxis_colorbar=dict(
+                      lenmode='pixels', len=400,
+                      thicknessmode='pixels', thickness=40,
+                      ticks='outside',
+                      title='Indoor Activity' # Change title here
+                  ),
+                  # modifications to the map appearance (special geo settings)
+                  geo=dict(
+                      showlakes=False,
+                      showland=True, landcolor='white'
+                  )
+                  )
+fig.update_coloraxes(colorbar_title_font=dict(size=14)) # set the fontsize of the colorbar title
 
-
+fig.update_traces(marker_line_width=0.3,  # controls county border line width
+                  marker_opacity=0.85,  # changes fill color opacity to let state borders through
+                  marker_line_color='#262626',  # controls county border color; needs to be darker than "states"
+                  )
